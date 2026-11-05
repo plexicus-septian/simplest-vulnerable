@@ -29,11 +29,13 @@ if(isset($_GET['id'])) {
     }
 }
 
-// Vulnerabilidad de Cross-Site Scripting (XSS)
-// El siguiente código es vulnerable a XSS ya que imprime directamente en el HTML el contenido de una variable que puede ser manipulada por el usuario sin ninguna sanitización.
+// Protección contra Cross-Site Scripting (XSS)
+// El input del usuario se codifica antes de imprimirlo en el HTML para evitar que se interprete como marcado o script ejecutable.
 if(isset($_GET['mensaje'])) {
-    $mensaje = $_GET['mensaje']; // Input del usuario susceptible a XSS
-    echo "<div>$mensaje</div>"; // Vulnerable a XSS
+    // El input del usuario se codifica con htmlspecialchars para prevenir XSS
+    // (ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' escapan comillas, evitan cadenas inválidas y respetan la codificación de la página).
+    $mensaje = htmlspecialchars(is_string($_GET['mensaje']) ? $_GET['mensaje'] : '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    echo "<div>$mensaje</div>";
 }
 
 // Cerrar conexión
